@@ -1,52 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace KeyGenerator
 {
-    class Program
+    public class Program
     {
-        private const string PossibleChars = "ACDEFGHKLMNPRTXYZ234579";
 
-        static List<string> GeneratePossibleSeeds(string chars)
-        {
-            var random = new Random();
-            random.Next(0, 2 ^ 64);
-            var seeds = new int[2 ^ 64];
-            var index = 0;
-            for (int i = 0; i < chars.Length; i++)
-            {
+        private const string Digits = "ACDEFGHKLMNPRTXYZ234579";
+        private const string PrivateKey = "-KaPdSgVkXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r5u8x";
 
-            }
-            return seeds.ToList();
-        }
+        /// <summary>
+        /// How many code will be generated
+        /// </summary>
+        private const int CodeCount = 10000;
 
-        static List<string> GenerateSeeds(int count, List<string> possibleSeeds)
-        {
-            if (count >= possibleSeeds.Count)
-                throw new ArgumentException("Count parameter can't be larger than seed count!");
-            // TODO: selim
-            var seeds = new List<string>();
-            var rand = new Random();
-            for (int i = 0; i < count; i++)
-            {
-                var index = rand.Next(0, possibleSeeds.Count);
-                var seed = possibleSeeds[index];
-                seeds.Add(seed);
-                possibleSeeds.RemoveAt(index);
-            }
-            return seeds;
-        }
+        /// <summary>
+        /// Code length in bytes. It is actually 3 Last 4 bits will be shifted
+        /// </summary>
+        private const int CodeLength = 40;
+
+        /// <summary>
+        /// Seed length in bits
+        /// </summary>
+        private const int SeedLength = 24;
+
 
         static void Main(string[] args)
-        {
-            // 6 Letters Seed () - 2 Letters Checksum (46 bit)
-            var possibleSeeds = GeneratePossibleSeeds(PossibleChars);
-            var seeds = GenerateSeeds(10000000, possibleSeeds);
-
-
-
-            Console.WriteLine("Hello World!");
+        {   
+            var keyEngine = new KeyEngine(PrivateKey, Digits, CodeLength, SeedLength);
+            var keys = keyEngine.GenerateKeys(CodeCount);
+            var isValid = keyEngine.ValidateKey(keys[0]);
         }
     }
 }
