@@ -8,42 +8,46 @@ namespace KeyGenerator
 {
     public class KeyEngine
     {
-        private BaseConverter m_Converter;
-        private RNGCryptoServiceProvider m_Random = new(DateTime.Now.ToString() + DateTime.Now.ToString());
-        private StringBuilder m_StringBuilder = new();
-        private SHA256 m_SHA256 = SHA256.Create();
+        private readonly BaseConverter m_Converter;
+        private readonly RNGCryptoServiceProvider m_Random = new(DateTime.Now.ToString() + DateTime.Now.ToString());
+        private readonly StringBuilder m_StringBuilder = new();
+        private readonly SHA256 m_SHA256 = SHA256.Create();
         
-        private int m_CodeLength;
-        private int m_SeedBitLength;
+        private readonly int m_CodeLength;
+        private readonly int m_SeedBitLength;
 
-        private byte[] m_PrivateKey;
+        private readonly byte[] m_PrivateKey;
 
-
-        private byte[] m_SeedBuffer;
+        /// <summary>
+        /// Stores the initial seed
+        /// </summary>
+        private readonly byte[] m_SeedBuffer;
 
         /// <summary>
         /// Stores the seed appended by salt (Private key)
         /// </summary>
-        private byte[] m_SaltBuffer;
-
-        private byte[] m_ResultBuffer;
+        private readonly byte[] m_SaltBuffer;
 
         /// <summary>
-        /// 
+        /// Stores the seed + checksum
         /// </summary>
-        /// <param name="privateKey"></param>
-        /// <param name="digitSet"></param>
-        /// <param name="keyBitLength"></param>
-        /// <param name="seedBithLength"></param>
-        public KeyEngine(string privateKey, string digitSet, int keyBitLength, int seedBithLength)
+        private readonly byte[] m_ResultBuffer;
+
+        /// <summary>
+        /// Creates an instance of the key engine. Used to create new keys and validate them
+        /// </summary>
+        /// <param name="privateKey">Private key to salt the seed with</param>
+        /// <param name="digitSet">Character set to encode the code with</param>
+        /// <param name="codeBitLength">Bit size length of code</param>
+        public KeyEngine(string privateKey, string digitSet)
         {
             m_PrivateKey = Encoding.ASCII.GetBytes(privateKey); 
             m_Converter = new BaseConverter(digitSet);
-            m_CodeLength = keyBitLength;
-            m_SeedBitLength = seedBithLength;
+            m_CodeLength = 40;
+            m_SeedBitLength = 24;
 
-            var keyLength = keyBitLength / 8;
-            var seedLength = seedBithLength / 8;
+            var keyLength = 40 / 8;
+            var seedLength = 24 / 8;
             var checksumLength = keyLength - seedLength;
 
             m_SaltBuffer = new byte[m_PrivateKey.Length + seedLength];
@@ -119,6 +123,7 @@ namespace KeyGenerator
             var checksumLength = codeLength - seedLength;
 
             var seeds = GenerateSeeds3Byte(keyCount);
+
             var keys = new List<string>();
             for (int i = 0; i < keyCount; i++)
             {

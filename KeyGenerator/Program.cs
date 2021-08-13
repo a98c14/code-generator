@@ -30,9 +30,10 @@ namespace KeyGenerator
 
         static void Main(string[] args)
         {   
-            var keyEngine = new KeyEngine(PrivateKey, Digits, CodeLength, SeedLength);
+            var keyEngine = new KeyEngine(PrivateKey, Digits);
             var keys = keyEngine.GenerateKeys(CodeCount);
-            var isValid = keyEngine.ValidateKey(keys[0]);
+            foreach(var key in keys)
+                Console.WriteLine(key);
         }
     }
 }

@@ -18,7 +18,7 @@ Generates unique keys that can be validated without a lookup table.
   - A seed could be picked from all possible seed list and then that seed is removed from the list so we can never pick the same seed again. This doesn't have good performance but it is always unique.
   - We could increase the seed size and reduce the chance of collision. Maximum seed size we can shoose is 32 bits (leaving 4 bits for checksum, which is not good). Collision chance for a 32 bit value in 10 million generation is almost guaranteed. So I have chosen the first approach.
 - To make it more resistant to brute force attacks, seed values are salted with a private key.
-- To convert the byte array to given charset.
+- To convert the byte array to a valid code we transform it to base 23 (length of characters available).
 
 
  ### Structure
@@ -26,6 +26,9 @@ Generates unique keys that can be validated without a lookup table.
 | Seed    | Checksum |
 | ------- | -------- |
 | 24 Bits | 12 Bits  |
+
+### Problems
+- Currently randomly generated keys sometimes passes validation stage. ~2000 of 10,000,000 generated keys validated as true despite being generated randomly. I couldn't figure out a way to solve it without increasing the size.
 
 
 ### References
