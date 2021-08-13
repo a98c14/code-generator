@@ -9,7 +9,7 @@ namespace KeyGenerator
     public class Program
     {
 
-        private const string Digits = "ACDEFGHKLMNPRTXYZ234579";
+        private const string Digits = "LMTXYZ79ANPRCDEF2345GHK";
         private const string PrivateKey = "-KaPdSgVkXp2s5v8y/B?E(H+MbQeThWmZq3t6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r5u8x";
 
         /// <summary>
@@ -32,8 +32,13 @@ namespace KeyGenerator
         {   
             var keyEngine = new KeyEngine(PrivateKey, Digits);
             var keys = keyEngine.GenerateKeys(CodeCount);
+            var isValid = keyEngine.ValidateKey(keys[0]);
+            if(!isValid)
+                throw new Exception("Generated key is not valid. Should have never happened!");
+
             foreach(var key in keys)
                 Console.WriteLine(key);
+          
         }
     }
 }

@@ -29,7 +29,7 @@ Generates unique keys that can be validated without a lookup table.
 
 ### Problems
 - Currently randomly generated keys sometimes passes validation stage. ~2000 of 10,000,000 generated keys validated as true despite being generated randomly. I couldn't figure out a way to solve it without increasing the size.
-
+- Since keys are generated from all possible combinations pool, some letters are not used as much in the seed generation. Last 3 digits usually have less occurence first characters of the seed. I don't know how but this probably could be abused
 
 ### References
 
